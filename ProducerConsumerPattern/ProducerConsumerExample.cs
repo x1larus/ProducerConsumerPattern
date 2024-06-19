@@ -1,25 +1,9 @@
-﻿using System.Diagnostics;
-
-namespace ProducerConsumerPattern
+﻿namespace ProducerConsumerPattern
 {
-    internal static class IdHelper
-    {
-        private static int _id = 0;
-        private static readonly object Lock = new object();
-
-        public static int GetNextId()
-        {
-            lock (Lock)
-            {
-                return _id++;
-            }
-        }
-    }
-
     internal class ProducerConsumerExample
     {
         private const int ProducerCount = 5;
-        private const int ConsumerCount = 5;
+        private const int ConsumerCount = 1;
         private const int ProducerMaxSleep = 5000;
         private const int ConsumerMaxSleep = 5000;
         
@@ -39,11 +23,8 @@ namespace ProducerConsumerPattern
                     TimeProduced = DateTime.Now.TimeOfDay,
                 };
 
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"Producer {id}: created DataEntity " + data.GetProducerReportString());
-                Console.ResetColor();
-
                 _blockingQueue.PushItem(data);
+                ConsoleLogHelper.Log($"Producer {id}: created DataEntity " + data.GetProducerReportString(), ConsoleColor.Yellow);
             }
         }
 
@@ -53,10 +34,11 @@ namespace ProducerConsumerPattern
             while (true)
             {
                 var data = _blockingQueue.GetItem();
+
                 data.TimeConsumed = DateTime.Now.TimeOfDay;
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Consumer {id}: get DataEntity " + data.GetConsumerReportString());
-                Console.ResetColor();
+
+                ConsoleLogHelper.Log($"Consumer {id}: get DataEntity " + data.GetConsumerReportString(), ConsoleColor.Green);
+                
                 Thread.Sleep(rand.Next(0, ConsumerMaxSleep));
             }
         }

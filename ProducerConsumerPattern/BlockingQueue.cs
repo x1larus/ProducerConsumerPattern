@@ -15,6 +15,7 @@
             {
                 while (_queue.Count >= _maxSize)
                 {
+                    ConsoleLogHelper.Log("BlockingQueue is full!", ConsoleColor.Red);
                     Monitor.Wait(_queue);
                 }
 
